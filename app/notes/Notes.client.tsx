@@ -1,12 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState,useEffect } from 'react';
 import { useDebounce } from 'use-debounce';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { fetchNotes, createNote, deleteNote } from '@/lib/api';
 import type { FetchNotesResponse } from '@/lib/api';
-import type { Note } from '@/types/note';
+import type { NoteInput } from '@/types/note';
 
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
@@ -27,6 +27,15 @@ export default function NotesClient() {
   const [debouncedSearch] = useDebounce(search, 400);
 
   const queryClient = useQueryClient();
+   useEffect(() => {
+    const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
+    if (!token) {
+      console.warn('⚠️ NEXT_PUBLIC_NOTEHUB_TOKEN не знайдено! Перевір .env.local');
+    } else {
+      console.log('✅ Токен знайдено:', token.slice(0, 10) + '...');
+    }
+  }, []);
+
 
   const queryKey = useMemo(
     () => ['notes', { page, perPage: PER_PAGE, search: debouncedSearch }],
@@ -44,7 +53,7 @@ export default function NotesClient() {
 
   // create
   const createMutation = useMutation({
-    mutationFn: (values: Omit<Note, 'id'>) => createNote(values),
+    mutationFn: (values: NoteInput) => createNote(values),
     onSuccess: () => {
       setIsModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ['notes'] });
@@ -64,7 +73,7 @@ export default function NotesClient() {
     setSearch(value);
   };
 
-  const handleCreate = (values: Omit<Note, 'id'>) => {
+  const handleCreate = (values: NoteInput) => {
     createMutation.mutate(values);
   };
 
@@ -91,15 +100,16 @@ export default function NotesClient() {
         <NoteList notes={notes} onDelete={handleDelete} />
       )}
 
-      {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
+   {isModalOpen && (
+ <Modal onClose={() => setIsModalOpen(false)} isOpen={true}>
           <NoteForm
             onCancel={() => setIsModalOpen(false)}
             onSubmit={handleCreate}
             submitting={createMutation.isPending}
           />
         </Modal>
-      )}
+)}
+
     </div>
   );
 }

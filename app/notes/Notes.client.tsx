@@ -27,14 +27,9 @@ export default function NotesClient() {
   const [debouncedSearch] = useDebounce(search, 400);
 
   const queryClient = useQueryClient();
-   useEffect(() => {
-    const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
-    if (!token) {
-      console.warn('⚠️ NEXT_PUBLIC_NOTEHUB_TOKEN не знайдено! Перевір .env.local');
-    } else {
-      console.log('✅ Токен знайдено:', token.slice(0, 10) + '...');
-    }
-  }, []);
+   
+    
+  
 
 
   const queryKey = useMemo(
@@ -94,18 +89,18 @@ export default function NotesClient() {
       </header>
 
       {isLoading && <Loader />}
-      {isError && <ErrorMessage />}
+      {isError && <ErrorMessage name={'loadingError'} />}
 
       {!isLoading && !isError && notes.length > 0 && (
-        <NoteList notes={notes} onDelete={handleDelete} />
+        <NoteList notes={notes} />
       )}
 
    {isModalOpen && (
  <Modal onClose={() => setIsModalOpen(false)} isOpen={true}>
           <NoteForm
             onCancel={() => setIsModalOpen(false)}
-            onSubmit={handleCreate}
-            submitting={createMutation.isPending}
+            onCreate={handleCreate}
+            
           />
         </Modal>
 )}

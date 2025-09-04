@@ -8,7 +8,8 @@ import css from './NoteList.module.css';
 
 interface NoteListProps {
   notes: Note[];
-  onDelete: (id: string) => void;
+  
+
 }
 
 export default function NoteList({ notes }: NoteListProps) {
@@ -31,7 +32,8 @@ export default function NoteList({ notes }: NoteListProps) {
             <Link href={`/notes/${note.id}`} className={css.link}>
               View details
             </Link>
-            <button className={css.button} onClick={() => mutation.mutate(note.id)}disabled={mutation.isPending}>
+            <button className={css.button} 
+            onClick={() => mutation.mutate(note.id)}disabled={mutation.isPending}>
               Delete
             </button>
           </div>

@@ -30,8 +30,8 @@ export const createNote = async (note: NoteInput): Promise<Note> => {
   return data;
 };  
 
-export const deleteNote = async (id: string): Promise<{ success: boolean }> => {
-  const { data }: AxiosResponse<{ success: boolean }> = await axios.delete(`/notes/${id}`);
+export const deleteNote = async (id: string): Promise<Note> => {
+  const { data }: AxiosResponse<Note> = await axios.delete(`/notes/${id}`);
   return data;
 };
 

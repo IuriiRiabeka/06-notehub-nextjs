@@ -99,7 +99,7 @@ export default function NotesClient() {
  <Modal onClose={() => setIsModalOpen(false)} isOpen={true}>
           <NoteForm
             onCancel={() => setIsModalOpen(false)}
-            onCreate={handleCreate}
+        
             
           />
         </Modal>

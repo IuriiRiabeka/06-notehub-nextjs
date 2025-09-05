@@ -5,14 +5,16 @@ import * as Yup from 'yup';
 import { useMutation, useQueryClient } from "@tanstack/react-query";  
 import { createNote } from "@/lib/api";
 
-import type { NoteTag, Note } from '@/types/note';
+import type { NoteTag } from '@/types/note';
 
 import { NoteInput } from '@/types/note';
 import css from './NoteForm.module.css';
 
 const validationSchema = Yup.object({
-  title: Yup.string().required("Title is required"),
-  content: Yup.string().max(500, "Content must be at most 500 characters"),
+  title: Yup.string().required("Title is required").
+  min(3, "Title must be at least 3 characters").
+  max(50, "Title must be at most 50 characters"),
+  content: Yup.string().optional().max(500, "Content must be at most 500 characters"),
   tag: Yup.mixed<NoteTag>()
     .oneOf(["Work", "Personal", "Meeting", "Shopping", "Todo"])
     .required("Tag is required"),
@@ -20,7 +22,7 @@ const validationSchema = Yup.object({
 interface NoteFormProps {
   
   onCancel: () => void;
-  onCreate?: (note: Note) => void;
+  
   
 
 }
@@ -60,11 +62,11 @@ export default function NoteForm({ onCancel }: NoteFormProps)
 
         <label>Tag</label>
         <Field as="select" name="tag">
-          <option value="work">Work</option>
-          <option value="personal">Personal</option>
-          <option value="todo">Todo</option>
-          <option value="meeting">Meeting</option>
-          <option value="shopping">Shopping</option>
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Todo">Todo</option>
+          <option value="Meeting">Meeting</option>
+          <option value="Shopping">Shopping</option>
         </Field>
         <ErrorMessage name="tag" />
 <div className={css.actions}>
